@@ -25,13 +25,13 @@ const Checkout = () => {
   const [total, setTotal] = useState<any>(0);
 
   const onClick = (item: string) => {
-    //Increases our items count by 1
+    //This function increases the selected items count by 1
     setItems({
       ...items,
       [item]: items[item] + 1,
     });
 
-    //This filters the data array to make sure were working on the correct item object from it
+    //This filters the data array to make sure we're working on the correct item object from it
     const itemObj = data.filter(function (obj: itemObjType) {
       return obj.sku === item;
     });
