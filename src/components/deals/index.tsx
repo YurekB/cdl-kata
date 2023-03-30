@@ -1,4 +1,4 @@
-import data from "../checkout/data";
+import data, { itemObjType } from "../checkout/data";
 import { DealsContainer } from "./styles";
 
 const Deals = () => {
@@ -7,7 +7,7 @@ const Deals = () => {
   return (
     <DealsContainer>
       <h4>Item: Deal</h4>
-      {data.map((item: any) => {
+      {data.map((item: itemObjType) => {
         if (item.deal) {
           const dealPrice = item.deal.for.toString();
 

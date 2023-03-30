@@ -1,4 +1,10 @@
-const data: any[] = [
+export interface itemObjType {
+  sku: string;
+  price: number;
+  deal: { amount: number; for: number } | null;
+}
+
+const data: itemObjType[] = [
   {
     sku: "A",
     price: 50,

@@ -6,9 +6,11 @@ import Prices from "./components/prices";
 function App() {
   return (
     <div className="App">
-      <Prices />
-      <Checkout />
-      <Deals />
+      <>
+        <Prices />
+        <Checkout />
+        <Deals />
+      </>
     </div>
   );
 }

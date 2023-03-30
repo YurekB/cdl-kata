@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import data from "./data";
+import data, { itemObjType } from "./data";
 import {
   ButtonContainer,
   CheckoutContainer,
@@ -7,12 +7,16 @@ import {
   TotalAmount,
 } from "./styles";
 
+interface itemAmountObj {
+  [key: string]: number;
+}
+
 const Checkout = () => {
-  const [items, setItems] = useState<any>({});
+  const [items, setItems] = useState<itemAmountObj>({});
 
   useEffect(() => {
     //First we map over the data array to get our initial items object
-    data.map((item: any) => {
+    data.map((item: itemObjType) => {
       setItems({ ...items, [item.sku]: 1 });
       items[item.sku] = 1;
     });
@@ -28,7 +32,7 @@ const Checkout = () => {
     });
 
     //This filters the data array to make sure were working on the correct item object from it
-    const itemObj = data.filter(function (obj: any) {
+    const itemObj = data.filter(function (obj: itemObjType) {
       return obj.sku === item;
     });
 
@@ -68,14 +72,14 @@ const Checkout = () => {
       <h1>Checkout</h1>
       <h2>Scan item:</h2>
       <ButtonContainer>
-        {data.map((op: any) => {
+        {data.map((op: itemObjType) => {
           return (
             <ScanButton onClick={() => onClick(op.sku)}>{op.sku}</ScanButton>
           );
         })}
       </ButtonContainer>
       <div>
-        {data.map((op: any) => {
+        {data.map((op: itemObjType) => {
           return (
             <p>
               {op.sku}: {items[op.sku] - 1}
