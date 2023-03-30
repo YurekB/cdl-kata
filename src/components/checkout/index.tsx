@@ -32,29 +32,34 @@ const Checkout = () => {
     });
 
     //This filters the data array to make sure we're working on the correct item object from it
-    const itemObj = data.filter(function (obj: itemObjType) {
+    const itemObjFiltered = data.filter(function (obj: itemObjType) {
       return obj.sku === item;
     });
 
+    //Deconstructing to make the code look cleaner, more organised and easier to follow
+
+    const itemObj = itemObjFiltered[0];
+    const { deal, price } = itemObj;
+
     //First we check if that item object has a deal, If no deal then the value will be null
 
-    if (itemObj[0].deal) {
+    if (deal) {
       //This checks if our item has been scanned enough times to return a whole number when its divided by the deal amount
-      const dealAmount = Number.isInteger(items[item] / itemObj[0].deal.amount);
+      const dealAmount = Number.isInteger(items[item] / deal.amount);
 
       if (dealAmount) {
         //If we have enough for a deal we find the full price of the item if there was no deal
-        const fullPrice = itemObj[0].deal.amount * itemObj[0].price;
+        const fullPrice = deal.amount * price;
         //We also find the discount amount to know how much to take off
-        const discount = fullPrice - itemObj[0].deal.for;
+        const discount = fullPrice - deal.for;
 
         //Then we update the total accordingly
-        setTotal(total + itemObj[0].price - discount);
+        setTotal(total + price - discount);
       } else {
-        setTotal(total + itemObj[0].price);
+        setTotal(total + price);
       }
     } else {
-      setTotal(total + itemObj[0].price);
+      setTotal(total + price);
     }
   };
 
