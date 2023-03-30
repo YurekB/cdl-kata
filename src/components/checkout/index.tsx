@@ -1,37 +1,93 @@
-import { useState } from "react";
-import { CheckoutContainer, ScanButton } from "./styles";
+import { useEffect, useState } from "react";
+import data from "./data";
+import {
+  ButtonContainer,
+  CheckoutContainer,
+  ScanButton,
+  TotalAmount,
+} from "./styles";
 
 const Checkout = () => {
-  const [items, setItems] = useState<any>({
-    A: 0,
-    B: 0,
-    C: 0,
-    D: 0,
-  });
+  const [items, setItems] = useState<any>({});
+
+  useEffect(() => {
+    //First we map over the data array to get our initial items object
+    data.map((item: any) => {
+      setItems({ ...items, [item.sku]: 1 });
+      items[item.sku] = 1;
+    });
+  }, []);
+
+  const [total, setTotal] = useState<any>(0);
 
   const onClick = (item: string) => {
+    //Increases our items count by 1
     setItems({
       ...items,
       [item]: items[item] + 1,
     });
+
+    //This filters the data array to make sure were working on the correct item object from it
+    const itemObj = data.filter(function (obj: any) {
+      return obj.sku === item;
+    });
+
+    //First we check if that item object has a deal, If no deal then the value will be null
+
+    if (itemObj[0].deal) {
+      //This checks if our item has been scanned enough times to return a whole number when its divided by the deal amount
+      const dealAmount = Number.isInteger(items[item] / itemObj[0].deal.amount);
+
+      if (dealAmount) {
+        //If we have enough for a deal we find the full price of the item if there was no deal
+        const fullPrice = itemObj[0].deal.amount * itemObj[0].price;
+        //We also find the discount amount to know how much to take off
+        const discount = fullPrice - itemObj[0].deal.for;
+
+        //Then we update the total accordingly
+        setTotal(total + itemObj[0].price - discount);
+      } else {
+        setTotal(total + itemObj[0].price);
+      }
+    } else {
+      setTotal(total + itemObj[0].price);
+    }
   };
+
+  //Lines 54 -> 59 turn the total into a string to allow me to use substring on it to add the decimal point into the correct place
+
+  const strNum = total.toString();
+
+  const totalNum =
+    strNum.substring(0, strNum.length - 2) +
+    "." +
+    strNum.substring(strNum.length - 2);
 
   return (
     <CheckoutContainer>
       <h1>Checkout</h1>
       <h2>Scan item:</h2>
+      <ButtonContainer>
+        {data.map((op: any) => {
+          return (
+            <ScanButton onClick={() => onClick(op.sku)}>{op.sku}</ScanButton>
+          );
+        })}
+      </ButtonContainer>
       <div>
-        <ScanButton onClick={() => onClick("A")}>A</ScanButton>
-        <ScanButton onClick={() => onClick("B")}>B</ScanButton>
-        <ScanButton onClick={() => onClick("C")}>C</ScanButton>
-        <ScanButton onClick={() => onClick("D")}>D</ScanButton>
+        {data.map((op: any) => {
+          return (
+            <p>
+              {op.sku}: {items[op.sku] - 1}
+            </p>
+          );
+        })}
       </div>
-      <div>
-        <p>A: {items.A}</p>
-        <p>B: {items.B}</p>
-        <p>C: {items.C}</p>
-        <p>D: {items.D}</p>
-      </div>
+      <h3>Total:</h3>
+      <TotalAmount>
+        £ {totalNum.length < 4 ? "0" : ""}
+        {totalNum}
+      </TotalAmount>
     </CheckoutContainer>
   );
 };
